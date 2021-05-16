@@ -1,0 +1,11 @@
+JDF B
+// Created by Version 2.1 
+PROJECT maximus_x3
+DESIGN maximus_x3 Normal
+DEVKIT LC4128V-75T100C
+ENTRY Pure VHDL
+MODULE top.vhd
+MODSTYLE openxenium Normal
+SYNTHESIS_TOOL Synplify
+SIMULATOR_TOOL ModelSim
+TOPMODULE openxenium

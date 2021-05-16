@@ -1,0 +1,223 @@
+
+[Device]
+Family = lc4k;
+PartNumber = LC4128V-75T100C;
+Package = 100TQFP;
+PartType = LC4128V;
+Speed = -7.5;
+Operating_condition = COM;
+Status = Production;
+EN_PinGLB = yes;
+EN_PinMacrocell = yes;
+
+[Revision]
+Parent = lc4k128v.lci;
+DATE = 05/13/2021;
+TIME = 17:34:53;
+Source_Format = Pure_VHDL;
+Synthesis = Synplify;
+
+[Ignore Assignments]
+
+[Clear Assignments]
+
+[Backannotate Assignments]
+
+[Global Constraints]
+
+[Location Assignments]
+layer = OFF;
+LPC_CLK = Pin, 38, -, -, -;
+FLASH_ADDRESS_0_ = Pin, 14, -, E, 4;
+FLASH_ADDRESS_1_ = Pin, 11, -, D, 4;
+FLASH_ADDRESS_2_ = Pin, 10, -, D, 6;
+FLASH_ADDRESS_3_ = Pin, 9, -, D, 10;
+FLASH_ADDRESS_4_ = Pin, 8, -, D, 12;
+FLASH_ADDRESS_5_ = Pin, 6, -, C, 2;
+FLASH_ADDRESS_6_ = Pin, 5, -, C, 6;
+FLASH_ADDRESS_7_ = Pin, 4, -, C, 10;
+FLASH_ADDRESS_8_ = Pin, 3, -, C, 12;
+FLASH_ADDRESS_9_ = Pin, 100, -, B, 12;
+FLASH_ADDRESS_10_ = Pin, 99, -, B, 10;
+FLASH_ADDRESS_11_ = Pin, 98, -, B, 6;
+FLASH_ADDRESS_12_ = Pin, 97, -, B, 2;
+FLASH_ADDRESS_13_ = Pin, 94, -, A, 12;
+FLASH_ADDRESS_14_ = Pin, 93, -, A, 10;
+FLASH_ADDRESS_15_ = Pin, 92, -, A, 6;
+FLASH_ADDRESS_16_ = Pin, 91, -, A, 2;
+FLASH_ADDRESS_17_ = Pin, 87, -, P, 2;
+FLASH_ADDRESS_18_ = Pin, 86, -, P, 6;
+FLASH_ADDRESS_19_ = Pin, 85, -, P, 10;
+FLASH_ADDRESS_20_ = Pin, 84, -, P, 12;
+FLASH_CE_BAK = Pin, 19, -, F, 2;
+FLASH_CE_MAIN = Pin, 17, -, E, 12;
+FLASH_OE = Pin, 15, -, E, 6;
+FLASH_WE = Pin, 16, -, E, 10;
+XENIUM_D0 = Pin, 22, -, F, 12;
+FLASH_DQ_0_ = Pin, 78, -, O, 12;
+FLASH_DQ_1_ = Pin, 72, -, N, 12;
+FLASH_DQ_2_ = Pin, 71, -, N, 10;
+FLASH_DQ_3_ = Pin, 61, -, L, 4;
+FLASH_DQ_4_ = Pin, 60, -, L, 6;
+FLASH_DQ_5_ = Pin, 59, -, L, 10;
+FLASH_DQ_6_ = Pin, 50, -, J, 12;
+FLASH_DQ_7_ = Pin, 49, -, J, 10;
+LPC_LAD_0_ = Pin, 21, -, F, 10;
+LPC_LAD_1_ = Pin, 35, -, H, 10;
+LPC_LAD_2_ = Pin, 36, -, H, 6;
+LPC_LAD_3_ = Pin, 37, -, H, 2;
+LCD_DAT_0_ = Pin, 70, -, G, 5;
+LCD_DAT_1_ = Pin, 69, -, G, 6;
+LCD_DAT_2_ = Pin, 67, -, G, 8;
+LCD_DAT_3_ = Pin, 66, -, G, 10;
+LCD_DAT_4_ = Pin, 58, -, F, 8;
+LCD_DAT_5_ = Pin, 53, -, F, 0;
+LCD_DAT_6_ = Pin, 48, -, E, 10;
+LCD_DAT_7_ = Pin, 47, -, E, 8;
+
+[Group Assignments]
+layer = OFF;
+
+[Resource Reservations]
+layer = OFF;
+
+[Fitter Report Format]
+
+[Power]
+
+[Source Constraint Option]
+
+[Fast Bypass]
+
+[OSM Bypass]
+
+[Input Registers]
+
+[Netlist/Delay Format]
+NetList = VHDL;
+
+[IO Types]
+layer = OFF;
+LPC_CLK = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_0_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_1_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_2_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_3_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_4_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_5_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_6_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_7_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_8_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_9_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_10_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_11_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_12_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_13_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_14_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_15_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_16_ = LVCMOS33, PIN, 0, -;
+FLASH_ADDRESS_17_ = LVCMOS33, PIN, 1, -;
+FLASH_ADDRESS_18_ = LVCMOS33, PIN, 1, -;
+FLASH_ADDRESS_19_ = LVCMOS33, PIN, 1, -;
+FLASH_ADDRESS_20_ = LVCMOS33, PIN, 1, -;
+FLASH_CE_BAK = LVCMOS33, PIN, 0, -;
+FLASH_CE_MAIN = LVCMOS33, PIN, 0, -;
+FLASH_OE = LVCMOS33, PIN, 0, -;
+FLASH_WE = LVCMOS33, PIN, 0, -;
+XENIUM_D0 = LVCMOS33, PIN, 0, -;
+FLASH_DQ_0_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_1_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_2_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_3_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_4_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_5_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_6_ = LVCMOS33, PIN, 1, -;
+FLASH_DQ_7_ = LVCMOS33, PIN, 1, -;
+LPC_LAD_0_ = LVCMOS33, PIN, 0, -;
+LPC_LAD_1_ = LVCMOS33, PIN, 0, -;
+LPC_LAD_2_ = LVCMOS33, PIN, 0, -;
+LPC_LAD_3_ = LVCMOS33, PIN, 0, -;
+LCD_DAT_0_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_1_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_2_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_3_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_4_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_5_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_6_ = LVCMOS33, PIN, 1, -;
+LCD_DAT_7_ = LVCMOS33, PIN, 1, -;
+
+[Pullup]
+
+[Slewrate]
+
+[Region]
+
+[Timing Constraints]
+layer = OFF;
+
+[HSI Attributes]
+
+[Input Delay]
+
+[opt global constraints list]
+
+[Explorer User Settings]
+
+[Pin attributes list]
+
+[global constraints list]
+
+[Global Constraints Process Update]
+
+[pin lock limitation]
+
+[LOCATION ASSIGNMENTS LIST]
+
+[RESOURCE RESERVATIONS LIST]
+
+[individual constraints list]
+
+[Attributes list setting]
+
+[Timing Analyzer]
+
+[PLL Assignments]
+
+[Dual Function Macrocell]
+
+[Explorer Results]
+
+[VHDL synplify constraints]
+
+[VHDL spectrum constraints]
+
+[verilog synplify constraints]
+
+[verilog spectrum constraints]
+
+[VHDL synplify constraints list]
+
+[VHDL spectrum constraints list]
+
+[verilog synplify constraints list]
+
+[verilog spectrum constraints list]
+
+[ORP Bypass]
+
+[Register Powerup]
+
+[Constraint Version]
+version = 1.0;
+
+[ORP ASSIGNMENTS]
+layer = OFF;
+
+[Node attribute]
+layer = OFF;
+
+[SYMBOL/MODULE attribute]
+layer = OFF;
+
+[Nodal Constraints]
+layer = OFF;
