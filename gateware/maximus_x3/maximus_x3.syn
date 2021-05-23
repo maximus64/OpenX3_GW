@@ -5,7 +5,7 @@ DESIGN maximus_x3 Normal
 DEVKIT LC4128V-75T100C
 ENTRY Pure VHDL
 MODULE top.vhd
-MODSTYLE openxenium Normal
+MODSTYLE openx3 Normal
 SYNTHESIS_TOOL Synplify
 SIMULATOR_TOOL ModelSim
-TOPMODULE openxenium
+TOPMODULE openx3

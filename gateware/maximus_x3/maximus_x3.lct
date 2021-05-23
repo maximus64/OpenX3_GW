@@ -12,8 +12,8 @@ EN_PinMacrocell = yes;
 
 [Revision]
 Parent = lc4k128v.lci;
-DATE = 05/13/2021;
-TIME = 17:34:53;
+DATE = 05/23/2021;
+TIME = 23:01:23;
 Source_Format = Pure_VHDL;
 Synthesis = Synplify;
 
@@ -53,7 +53,6 @@ FLASH_CE_BAK = Pin, 19, -, F, 2;
 FLASH_CE_MAIN = Pin, 17, -, E, 12;
 FLASH_OE = Pin, 15, -, E, 6;
 FLASH_WE = Pin, 16, -, E, 10;
-XENIUM_D0 = Pin, 22, -, F, 12;
 FLASH_DQ_0_ = Pin, 78, -, O, 12;
 FLASH_DQ_1_ = Pin, 72, -, N, 12;
 FLASH_DQ_2_ = Pin, 71, -, N, 10;
@@ -74,6 +73,19 @@ LCD_DAT_4_ = Pin, 58, -, F, 8;
 LCD_DAT_5_ = Pin, 53, -, F, 0;
 LCD_DAT_6_ = Pin, 48, -, E, 10;
 LCD_DAT_7_ = Pin, 47, -, E, 8;
+FP_BANK_DIP_0_ = Pin, 23, -, -, -;
+FP_BANK_DIP_1_ = Pin, 27, -, -, -;
+FP_BANK_DIP_2_ = Pin, 28, -, D, 13;
+FP_BANK_DIP_3_ = Pin, 29, -, D, 12;
+EJECT_BTN = Pin, 41, -, E, 0;
+PWR_BTN = Pin, 39, -, -, -;
+FP_LOGO_RED = Pin, 31, -, D, 8;
+TSOP_D0 = Pin, 22, -, C, 2;
+LCD_K = Pin, 20, -, C, 5;
+LCD_E = Pin, 64, -, G, 14;
+LCD_RS = Pin, 44, -, E, 6;
+LCD_RW = Pin, 65, -, G, 12;
+FP_LOGO_BLUE = Pin, 30, -, D, 10;
 
 [Group Assignments]
 layer = OFF;
@@ -124,7 +136,6 @@ FLASH_CE_BAK = LVCMOS33, PIN, 0, -;
 FLASH_CE_MAIN = LVCMOS33, PIN, 0, -;
 FLASH_OE = LVCMOS33, PIN, 0, -;
 FLASH_WE = LVCMOS33, PIN, 0, -;
-XENIUM_D0 = LVCMOS33, PIN, 0, -;
 FLASH_DQ_0_ = LVCMOS33, PIN, 1, -;
 FLASH_DQ_1_ = LVCMOS33, PIN, 1, -;
 FLASH_DQ_2_ = LVCMOS33, PIN, 1, -;
@@ -145,6 +156,19 @@ LCD_DAT_4_ = LVCMOS33, PIN, 1, -;
 LCD_DAT_5_ = LVCMOS33, PIN, 1, -;
 LCD_DAT_6_ = LVCMOS33, PIN, 1, -;
 LCD_DAT_7_ = LVCMOS33, PIN, 1, -;
+FP_BANK_DIP_0_ = LVCMOS33, PIN, 0, -;
+FP_BANK_DIP_1_ = LVCMOS33, PIN, 0, -;
+FP_BANK_DIP_2_ = LVCMOS33, PIN, 0, -;
+FP_BANK_DIP_3_ = LVCMOS33, PIN, 0, -;
+EJECT_BTN = LVCMOS33, PIN, 1, -;
+PWR_BTN = LVCMOS33, PIN, 1, -;
+FP_LOGO_BLUE = LVCMOS33, PIN, 0, -;
+FP_LOGO_RED = LVCMOS33, PIN, 0, -;
+TSOP_D0 = LVCMOS33, PIN, 0, -;
+LCD_K = LVCMOS33, PIN, 0, -;
+LCD_E = LVCMOS33, PIN, 1, -;
+LCD_RS = LVCMOS33, PIN, 1, -;
+LCD_RW = LVCMOS33, PIN, 1, -;
 
 [Pullup]
 

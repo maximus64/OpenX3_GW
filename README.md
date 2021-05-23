@@ -9,3 +9,7 @@ This schematic is very close to the Xecuter 3 CE modchip but one major differenc
 
 ## Flash Writer
 Python script that uses the JTAG boundary scan mode to reprogram the parallel flash on the Xecuter 3
+
+## Thanks
+- @Ryzee119 - OpenXenium project
+- @xbox7878 - reversing the X3 IO registers

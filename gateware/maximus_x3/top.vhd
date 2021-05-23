@@ -1,9 +1,12 @@
--- Design Name: openxenium
--- Module Name: openxenium - Behavioral
--- Project Name: OpenXenium. Open Source Xenius modchip CPLD replacement project
--- Target Devices: XC9572XL-10VQ64
+-- Design Name: openx3
+-- Module Name: openx3 - Behavioral
+-- Project Name: OpenX3. Open Source Xecuter 3 modchip CPLD replacement project
+-- Target Devices: LC4128V-75T100C / LC4256V-75T100C
 --
--- Revision 0.01 - File Created - Ryan Wendland
+-- Customize for Xecuter 3 by @maximus64 (Khoa Hoang)
+--
+-- Based on OpenXenium project by Ryan Wendland
+-- (https://github.com/Ryzee119/OpenXenium/blob/master/Firmware/openxenium.vhd)
 --
 -- Additional Comments:
 --
@@ -21,120 +24,11 @@
 -- along with this program. If not, see .
 --
 ----------------------------------------------------------------------------------
---
---
---**BANK SELECTION**
---Bank selection is controlled by the lower nibble of address REG_00EF.
---A20,A19,A18 are address lines to the parallel flash memory.
---lines marked X means it is not forced by the CPLD for banking purposes.
---This is how is works:
---
---REGISTER 0xEF Bank Commands:
---BANK NAME                  DATA BYTE    A20|A19|A18 ADDRESS OFFSET
---TSOP                       XXXX 0000     X |X |X    N/A.     (This locks up the Xenium to force it to boot from TSOP.)
---XeniumOS(c.well loader)    XXXX 0001     1 |1 |0    0x180000 (This is the default boot state. Contains Cromwell bootloader)
---XeniumOS                   XXXX 0010     1 |0 |X    0x100000 (This is a 512kb bank and contains XeniumOS)
---BANK1 (USER BIOS 256kB)    XXXX 0011     0 |0 |0    0x000000
---BANK2 (USER BIOS 256kB)    XXXX 0100     0 |0 |1    0x040000
---BANK3 (USER BIOS 256kB)    XXXX 0101     0 |1 |0    0x080000
---BANK4 (USER BIOS 256kB)    XXXX 0110     0 |1 |1    0x0C0000
---BANK1 (USER BIOS 512kB)    XXXX 0111     0 |0 |X    0x000000
---BANK2 (USER BIOS 512kB)    XXXX 1000     0 |1 |X    0x080000
---BANK1 (USER BIOS 1MB)      XXXX 1001     0 |X |X    0x000000
---RECOVERY (NOTE 1)          XXXX 1010     1 |1 |1    0x1C0000 
--- 
---
---NOTE 1: The RECOVERY bank can also be actived by the physical switch on the Xenium. This forces bank ten (0b1010) on power up.
---This bank also contains non-volatile storage of settings an EEPROM backup in the smaller sectors at the end of the flash memory.
---The memory map is shown below:
---     (1C0000 to 1DFFFF PROTECTED AREA 128kbyte recovery bios)
---     (1E0000 to 1FBFFF Additional XeniumOS Data)
---     (1FC000 to 1FFFFF Contains eeprom backup, XeniumOS settings)
---
---
---**XENIUM CONTROL WRITE/READ REGISTERS**
---Bits marked 'X' either have no function or an unknown function.
---**0xEF WRITE:**
---X,SCK,CS,MOSI,BANK[3:0]
---
---**0xEF READ:**
---RECOV SWITCH POSITION (0=ACTIVE),X,MISO(Pin 1),MISO (Pin 4),BANK[3:0] 
---
---**0xEE (WRITE)**
---X,X,X,X X,B,G,R (DEFAULT LED ON POWER UP IS RED)
---
---**0xEE (READ)**
---Just returns 0x55 on a real xenium?
---
-
-
--- LPC BUS
--- LAD0 - PIN 34 - B3 - Blown (let move to PIN 21 - B9)
--- LAD2 - PIN 36 - B1 - OK
--- LAD1 - PIN 35 - B2 - OK
--- LCLK - PIN 38 - CLK1 - OK
--- LAD3 - PIN 37 - B0 - OK
-
-
--- D0 Mosfet (High pull low) - 22 - B8
--- Write Protection SW - 12 - I_2
--- Font panel power - 41 - C0
--- Font panel eject - 39 - CLK2
-
-
--- Flash pinout:
-
--- CE Big - 17 - B12
--- CE Bak - 19 - B11
--- OE - 15 - B14
--- WE - 16 - B13
-
--- A0 - 14 - B15
--- A1 - 11 - A15
--- A2 - 10 - A14
--- A3 -  9 - A13
--- A4 -  8 - A12
--- A5 -  6 - A11
--- A6 -  5 - A10
--- A7 -  4 - A9
--- A8 -  3 - A8
--- A9 - 100 - A7
--- A10 - 99 - A6
--- A11 - 98 - A5
--- A12 - 97 - A4
--- A13 - 94 - A3
--- A14 - 93 - A2
--- A15 - 92 - A1
--- A16 - 91 - A0
--- A17 - 87 - D0
--- A18 - 86 - D1 (only big flash)
--- A19 - 85 - D2 (only big flash)
--- A20 - 84 - D3 (only big flash)
-
--- DQ0 - 78 - D7
--- DQ1 - 72 - D8
--- DQ2 - 71 - D9
--- DQ3 - 61 - C15
--- DQ4 - 60 - C14
--- DQ5 - 59 - C13
--- DQ6 - 50 - C7
--- DQ7 - 49 - C6
-
--- LCD:
--- D0 - 70 - IOG5
--- D1 - 69 - IOG6
--- D2 - 67 - IOG8
--- D3 - 66 - IOG10
--- D4 - 58 - IOF8
--- D5 - 53 - IOF0
--- D6 - 48 - IOE10
--- D7 - 47 - IOE8
-
  
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
-ENTITY openxenium IS
+ENTITY openx3 IS
    PORT (
       FLASH_CE_MAIN : OUT STD_LOGIC;
       FLASH_CE_BAK : OUT STD_LOGIC;
@@ -145,19 +39,33 @@ ENTITY openxenium IS
 
       LPC_LAD : INOUT STD_LOGIC_VECTOR (3 DOWNTO 0);
       LPC_CLK : IN STD_LOGIC;
-      -- LPC_RST : IN STD_LOGIC; X3 doesn't have this signal
 
-      XENIUM_D0 : OUT STD_LOGIC;
+      TSOP_D0 : OUT STD_LOGIC;
 
       -- X3 parallel bus LCD
-      LCD_DAT : OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
+      LCD_DAT : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+      LCD_RS : OUT STD_LOGIC;
+      LCD_RW : OUT STD_LOGIC;
+      LCD_E : OUT STD_LOGIC;
+      LCD_K : OUT STD_LOGIC;
+
+      -- Power / Eject button to sel boot mode
+      PWR_BTN : IN STD_LOGIC;
+      EJECT_BTN : IN STD_LOGIC;
+
+      -- X3 front panel
+      FP_BANK_DIP : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
+      FP_WRITE_PROTECT : IN STD_LOGIC;
+      FP_LOGO_BLUE : OUT STD_LOGIC;
+      FP_LOGO_RED : OUT STD_LOGIC
    );
 
-END openxenium;
+END openx3;
 
-ARCHITECTURE Behavioral OF openxenium IS
+ARCHITECTURE Behavioral OF openx3 IS
 
    TYPE LPC_STATE_MACHINE IS (
+   INIT_CHIP,
    WAIT_START, 
    CYCTYPE_DIR, 
    ADDRESS, 
@@ -179,13 +87,11 @@ ARCHITECTURE Behavioral OF openxenium IS
    MEM_WRITE
    );
 
-   -- X3 doesn't have this signal. Active low
-   CONSTANT LPC_RST : STD_LOGIC := '1';
    CONSTANT XENIUM_RECOVERY : STD_LOGIC := '0';
    CONSTANT HEADER_4 : STD_LOGIC := '0';
    CONSTANT HEADER_1 : STD_LOGIC := '0';
 
-   SIGNAL LPC_CURRENT_STATE : LPC_STATE_MACHINE := WAIT_START;
+   SIGNAL LPC_CURRENT_STATE : LPC_STATE_MACHINE := INIT_CHIP;
    SIGNAL CYCLE_TYPE : CYC_TYPE := IO_READ;
 
    SIGNAL LPC_ADDRESS : STD_LOGIC_VECTOR (20 DOWNTO 0); --LPC Address is actually 32bits for memory IO, but we only need 20.
@@ -194,32 +100,44 @@ ARCHITECTURE Behavioral OF openxenium IS
    --Bit masks are all shown upper nibble first.
  
    --IO WRITE/READ REGISTERS SIGNALS
-   CONSTANT XENIUM_00EE : STD_LOGIC_VECTOR (7 DOWNTO 0) := x"EE"; --CONSTANT (RGB LED Control Register)
-   CONSTANT XENIUM_00EF : STD_LOGIC_VECTOR (7 DOWNTO 0) := x"EF"; --CONSTANT (SPI and Banking Control Register)
-   SIGNAL REG_00EE_WRITE : STD_LOGIC_VECTOR (7 DOWNTO 0) := "00000001"; --X,X,X,X X,B,G,R. Red is default LED colour
-   SIGNAL REG_00EF_WRITE : STD_LOGIC_VECTOR (7 DOWNTO 0) := "00000001"; --X,SCK,CS,MOSI, BANKCONTROL[3:0]. Bank 1 is default.
-   SIGNAL REG_00EF_READ : STD_LOGIC_VECTOR (7 DOWNTO 0) := "01010101"; --Input signal
-   SIGNAL REG_00EE_READ : STD_LOGIC_VECTOR (7 DOWNTO 0) := "01010101"; --Input signal
+   CONSTANT X3_VERSION_F500 : STD_LOGIC_VECTOR (15 DOWNTO 0) := x"F500"; --CONSTANT (Xecuter 3 Version Register: 0xF500)
+   -- (Read only)
+   -- Must return 0xe1 otherwise X3 bios will refuse to boot
+   CONSTANT X3_CONTROL_F501 : STD_LOGIC_VECTOR (15 DOWNTO 0) := x"F501"; --CONSTANT (Xecuter 3 Control Register: 0xF501)
+   -- Bits: (R/W)
+   -- 0-3 - DIP switch bank selection (read only)
+   -- 4 - unknow (unused?)
+   -- 5 - unknow (set when chip disable - one is probably LPC FSM reset while the other control D0)
+   -- 6 - unknow (set when chip disable - note ^)
+   -- 7 - backup flash select (set when flashing backup bios)
+   CONSTANT X3_SW_BANK_F502 : STD_LOGIC_VECTOR (15 DOWNTO 0) := x"F502"; --CONSTANT (Xecuter 3 Status Register: 0xF502)
+   -- Bits: (R/W)
+   -- 0-3 - Software bank selection
+   -- 7 - Sofware bank select if set, otherwise dip switch bank sel
+
+   SIGNAL BANK_SEL : STD_LOGIC_VECTOR (3 DOWNTO 0) := "0000";
+   SIGNAL SW_BANK : STD_LOGIC := '0';
+   SIGNAL RECOVERY_BOOT : STD_LOGIC := '0';
+   SIGNAL WRITE_PROTECT : STD_LOGIC := '0';
+
    SIGNAL READBUFFER : STD_LOGIC_VECTOR (7 DOWNTO 0); --I buffer Memory and IO reads to reduce pin to pin delay in CPLD which caused issues
  
-   SIGNAL COUNTER : STD_LOGIC_VECTOR (11 DOWNTO 0);
-
    --R/W SIGNAL FOR FLASH MEMORY
    SIGNAL sFLASH_DQ : STD_LOGIC_VECTOR (7 DOWNTO 0) := "ZZZZZZZZ";
  
    --TSOPBOOT IS SET TO '1' WHEN YOU REQUEST TO BOOT FROM TSOP. THIS PREVENTS THE CPLD FROM DRIVING D0.
-   --D0LEVEL is inverted and connected to the D0 output pad. This allows the CPLD to latch/release the D0/LFRAME signal.
+   --D0LEVEL connected to the D0 output pad. This allows the CPLD to latch/release the D0/LFRAME signal.
    SIGNAL TSOPBOOT : STD_LOGIC := '0';
    SIGNAL D0LEVEL : STD_LOGIC := '0';
  
    --GENERIC COUNTER USED TO TRACK ADDRESS AND SYNC COUNTERS.
    SIGNAL COUNT : INTEGER RANGE 0 TO 7;
-
+   SIGNAL TEST_REG : STD_LOGIC_VECTOR (7 DOWNTO 0) := "00000000";
 BEGIN
    --ASSIGN THE IO TO SIGNALS BASED ON REQUIRED BEHAVIOUR
-   --TODO: maximus force boot main flash for now
-   FLASH_CE_MAIN <= '0';
-   FLASH_CE_BAK <= '1';
+   -- Flash CE is active low
+   FLASH_CE_MAIN <= '0' WHEN RECOVERY_BOOT = '0' ELSE '1';
+   FLASH_CE_BAK <= '0' WHEN RECOVERY_BOOT = '1' ELSE '1';
 
    FLASH_ADDRESS <= LPC_ADDRESS;
 
@@ -261,46 +179,47 @@ BEGIN
    --Held low on boot to ensure it boots from the LPC then released when definitely booting from modchip.
    --When soldered to LFRAME it will simulate LPC transaction aborts for 1.6.
    --Released for TSOP booting.
-   --NOTE: XENIUM_D0 is an output to a mosfet driver. '0' turns off the MOSFET releasing D0
-   --and a value of '1' turns on the MOSFET forcing it to ground. This is why I invert D0LEVEL before mapping it.
---    XENIUM_D0 <= '0' WHEN TSOPBOOT = '1' ELSE
---                 '1' WHEN CYCLE_TYPE = MEM_READ ELSE
---                 '1' WHEN CYCLE_TYPE = MEM_WRITE ELSE
---                 NOT D0LEVEL; 
-   -- TODO: fix me Force D0 low for now
-   XENIUM_D0 <= '0';
- 
-   REG_00EF_READ <= XENIUM_RECOVERY & '0' & HEADER_4 & HEADER_1 & REG_00EF_WRITE(3 DOWNTO 0);
+   --NOTE: TSOP_D0 is an output to a mosfet driver. '1' turns off the MOSFET releasing D0
+   --and a value of '0' turns on the MOSFET forcing it to ground.
+   TSOP_D0 <= '1' WHEN TSOPBOOT = '1' ELSE
+                '0' WHEN CYCLE_TYPE = MEM_READ ELSE
+                '0' WHEN CYCLE_TYPE = MEM_WRITE ELSE
+                D0LEVEL;
 
-   -- Heart beat
-   LCD_DAT(7) <= COUNTER(11);
-   LCD_DAT(3 DOWNTO 0) <= "0000" WHEN LPC_CURRENT_STATE = WAIT_START ELSE
-                          "0001" WHEN LPC_CURRENT_STATE = CYCTYPE_DIR ELSE
-                          "0010" WHEN LPC_CURRENT_STATE = ADDRESS ELSE
-                          "0011" WHEN LPC_CURRENT_STATE = WRITE_DATA0 ELSE
-                          "0100" WHEN LPC_CURRENT_STATE = WRITE_DATA1 ELSE
-                          "0101" WHEN LPC_CURRENT_STATE = READ_DATA0 ELSE
-                          "0110" WHEN LPC_CURRENT_STATE = READ_DATA1 ELSE
-                          "0111" WHEN LPC_CURRENT_STATE = ADDRESS ELSE
-                          "1000" WHEN LPC_CURRENT_STATE = TAR1 ELSE
-                          "1001" WHEN LPC_CURRENT_STATE = TAR2 ELSE
-                          "1010" WHEN LPC_CURRENT_STATE = SYNCING ELSE
-                          "1011" WHEN LPC_CURRENT_STATE = SYNC_COMPLETE ELSE
-                          "1100" WHEN LPC_CURRENT_STATE = TAR_EXIT ELSE
-                          "1111";
-   LCD_DAT(6 DOWNTO 4) <= LPC_LAD(2 DOWNTO 0);
+-- DEBUG signal
+--   LCD_DAT(3 DOWNTO 0) <= BANK_SEL;
+--   LCD_DAT(4) <= RECOVERY_BOOT;
+--   LCD_DAT(5) <= WRITE_PROTECT;
+--   LCD_DAT(6) <= TSOPBOOT;
+--   LCD_DAT(7) <= D0LEVEL;
+   LCD_DAT <= TEST_REG;
 
---PROCESS (LPC_CLK, LPC_RST) BEGIN
+   -- X3 front panel LED (Note: active low)
+   FP_LOGO_BLUE <= '0' WHEN TSOPBOOT = '0' OR RECOVERY_BOOT = '1' ELSE '1';
+   FP_LOGO_RED <= '0' WHEN TSOPBOOT = '1' OR RECOVERY_BOOT = '1' ELSE '1';
+
 PROCESS (LPC_CLK) BEGIN
 
    IF (rising_edge(LPC_CLK)) THEN 
 
-      -- Heart beat counter
-      COUNTER <= COUNTER + 1;
-
       CASE LPC_CURRENT_STATE IS
+         WHEN INIT_CHIP =>
+            LPC_CURRENT_STATE <= WAIT_START;
+            BANK_SEL <= FP_BANK_DIP;
+            IF PWR_BTN = '0' AND EJECT_BTN = '0' THEN
+               -- Both power and eject held boot recovery
+               RECOVERY_BOOT <= '1';
+               TSOPBOOT <= '0';
+            ELSIF PWR_BTN = '0' AND EJECT_BTN = '1' THEN
+               -- Power button held: boot TSOP
+               RECOVERY_BOOT <= '0';
+               TSOPBOOT <= '1';
+            ELSE
+               RECOVERY_BOOT <= '0';
+               TSOPBOOT <= '0';
+            END IF;
          WHEN WAIT_START => 
-            IF LPC_LAD = "0000" THEN-- //TODO: alway boot to modchip AND TSOPBOOT = '0' THEN
+            IF LPC_LAD = "0000" AND TSOPBOOT = '0' THEN
                LPC_CURRENT_STATE <= CYCTYPE_DIR;
             END IF;
          WHEN CYCTYPE_DIR => 
@@ -330,9 +249,45 @@ PROCESS (LPC_CLK) BEGIN
                LPC_ADDRESS(20) <= LPC_LAD(0);
             ELSIF COUNT = 4 THEN
                LPC_ADDRESS(19 DOWNTO 16) <= LPC_LAD;
-               --Maximus: force 1MB bank
-               --LPC_ADDRESS(20) <= '0'; --1mb bank
-               LPC_ADDRESS(20 DOWNTO 18) <= "000"; --256kb bank
+               --BANK CONTROL
+               CASE BANK_SEL IS
+                  -- 256KB banks
+                  WHEN "0000" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "000"; --256kb bank 1
+                  WHEN "0001" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "001"; --256kb bank 2
+                  WHEN "0010" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "010"; --256kb bank 3
+                  WHEN "0011" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "011"; --256kb bank 4
+                  WHEN "0100" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "100"; --256kb bank 5
+                  WHEN "0101" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "101"; --256kb bank 6
+                  WHEN "0110" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "110"; --256kb bank 7
+                  WHEN "0111" =>
+                      LPC_ADDRESS(20 DOWNTO 18) <= "111"; --256kb bank 8
+                  -- 512KB banks
+                  WHEN "1000" =>
+                      LPC_ADDRESS(20 DOWNTO 19) <= "00"; --512kb bank 12
+                  WHEN "1001" =>
+                      LPC_ADDRESS(20 DOWNTO 19) <= "01"; --512kb bank 34
+                  WHEN "1010" =>
+                      LPC_ADDRESS(20 DOWNTO 19) <= "10"; --512kb bank 56
+                  WHEN "1011" =>
+                      LPC_ADDRESS(20 DOWNTO 19) <= "11"; --512kb bank 78
+                  -- 1MB banks
+                  WHEN "1100" =>
+                      LPC_ADDRESS(20) <= '0'; --1MB bank 1234
+                  WHEN "1101" =>
+                      LPC_ADDRESS(20) <= '1'; --1MB bank 5678
+                  -- Default bank or when x3 front panel disconnect
+                  WHEN "1111" =>
+                      LPC_ADDRESS(20) <= '0'; --1MB bank 1234
+                  -- Other - Full flash access
+                  WHEN OTHERS =>
+               END CASE;
             ELSIF COUNT = 3 THEN
                LPC_ADDRESS(15 DOWNTO 12) <= LPC_LAD; 
             ELSIF COUNT = 2 THEN
@@ -351,19 +306,23 @@ PROCESS (LPC_CLK) BEGIN
  
          --MEMORY OR IO WRITES. These all happen lower nibble first. (Refer to Intel LPC spec)
          WHEN WRITE_DATA0 => 
-            IF CYCLE_TYPE = IO_WRITE AND LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EE THEN
-               REG_00EE_WRITE(3 DOWNTO 0) <= LPC_LAD;
-            ELSIF CYCLE_TYPE = IO_WRITE AND LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EF THEN
-               REG_00EF_WRITE(3 DOWNTO 0) <= LPC_LAD;
+            IF CYCLE_TYPE = IO_WRITE THEN
+                IF LPC_ADDRESS(15 DOWNTO 0) = X3_SW_BANK_F502 THEN
+                    BANK_SEL <= LPC_LAD;
+                ELSIF LPC_ADDRESS(15 DOWNTO 0) = X3_CONTROL_F501 THEN
+                    TEST_REG(3 DOWNTO 0) <= LPC_LAD;
+                END IF;
             ELSIF CYCLE_TYPE = MEM_WRITE THEN
                sFLASH_DQ(3 DOWNTO 0) <= LPC_LAD;
             END IF;
             LPC_CURRENT_STATE <= WRITE_DATA1;
          WHEN WRITE_DATA1 => 
-            IF CYCLE_TYPE = IO_WRITE AND LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EE THEN
-               REG_00EE_WRITE(7 DOWNTO 4) <= LPC_LAD;
-            ELSIF CYCLE_TYPE = IO_WRITE AND LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EF THEN
-               REG_00EF_WRITE(7 DOWNTO 4) <= LPC_LAD;
+            IF CYCLE_TYPE = IO_WRITE THEN
+                IF LPC_ADDRESS(15 DOWNTO 0) = X3_SW_BANK_F502 THEN
+                    SW_BANK <= LPC_LAD(3);
+                ELSIF LPC_ADDRESS(15 DOWNTO 0) = X3_CONTROL_F501 THEN
+                    TEST_REG(7 DOWNTO 4) <= LPC_LAD;
+                END IF;
             ELSIF CYCLE_TYPE = MEM_WRITE THEN
                sFLASH_DQ(7 DOWNTO 4) <= LPC_LAD;
             END IF;
@@ -391,12 +350,15 @@ PROCESS (LPC_CLK) BEGIN
                IF CYCLE_TYPE = MEM_READ THEN
                   READBUFFER <= FLASH_DQ;
                ELSIF CYCLE_TYPE = IO_READ THEN
-                  IF LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EF THEN
-                     READBUFFER <= REG_00EF_READ;
-                  ELSIF LPC_ADDRESS(7 DOWNTO 0) = XENIUM_00EE THEN
-                     READBUFFER <= REG_00EE_READ;
+                  IF LPC_ADDRESS(15 DOWNTO 0) = X3_VERSION_F500 THEN
+                      READBUFFER <= x"E1";
+                  ELSIF LPC_ADDRESS(15 DOWNTO 0) = X3_CONTROL_F501 THEN
+                      READBUFFER(7 DOWNTO 4) <= "0000";
+                      READBUFFER(3 DOWNTO 0) <= FP_BANK_DIP;
+                  ELSIF LPC_ADDRESS(15 DOWNTO 0) = X3_SW_BANK_F502 THEN
+                      READBUFFER <= SW_BANK & "000" & BANK_SEL;
                   ELSE
-                     READBUFFER <= "11111111";
+                      READBUFFER <= "11111111";
                   END IF;
                END IF;
            ELSIF COUNT = 0 THEN
@@ -411,12 +373,6 @@ PROCESS (LPC_CLK) BEGIN
  
          --TURN BUS AROUND (PERIPHERAL TO HOST)
          WHEN TAR_EXIT => 
-            --D0 is held low until a few memory reads
-            --This ensures it is booting from the modchip. Genuine Xenium arbitrarily
-            --releases after the 5th read. This is always address 0x74
-            IF LPC_ADDRESS(7 DOWNTO 0) = x"74" THEN
-               D0LEVEL <= '1';
-            END IF;
             CYCLE_TYPE <= IO_READ;
             LPC_CURRENT_STATE <= WAIT_START;
       END CASE;
